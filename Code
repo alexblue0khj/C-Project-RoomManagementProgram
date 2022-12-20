@@ -1,0 +1,233 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#define SIZE 3  //숙박업소 안의 호수, 방개수.
+
+//현재 숙박중인 방의 구조체
+struct room {
+	int roomnum;      //방호수
+	char name[10];    //대표자의 성
+	int guestnum;     //숙박인원수
+	int charge;       //숙박요금
+};
+
+//현재 예약 목록
+struct reservation {
+	int resroomnum;   //예약방호수
+	char resname[10]; //대표자의 이름
+	int resguestnum;  //숙박예정인원수
+};
+
+//현재 숙박중인 방의 정보. 임의로 제시하였음.
+struct room list[SIZE] = {
+	{1,"Kim",2,20000},
+	{2,"   ",0,0},
+	{3,"   ",0,0}
+};
+
+//현재 예약목록. 임의로 제시하였음.
+struct reservation arr[SIZE] = {
+	{1,"   ",0},
+	{2,"Lee",3},
+	{3,"Park",4}
+};
+
+int main(void)
+{
+	int menu=0;  //메뉴에서 입력한 숫자가 들어가는 변수
+	int i;  //for문 안에서 1번방부터 3번방까지 반복되는 용도로 사용될 변수
+	
+	while (1) {
+		printf("=======메인메뉴=======\n");  //메뉴의 출력 및 어떤 메뉴를 선택할 것인지 입력을 받는다.
+		printf("1. 현재 숙소 상황\n");
+		printf("2. 예약 변경\n");
+		printf("3. 예약 목록 확인\n");
+		printf("4. 입실 확인\n");
+		printf("5. 추가 비용 관리\n");
+		printf("6. 퇴실 확인\n");
+		printf("7. 숙박업소 통계\n");
+		printf("8. 종료\n");
+		printf("=====================\n\n");
+		printf("메뉴 숫자를 입력해주세요.: (예 1)\n");
+		scanf("%d", &menu);
+
+		//메뉴1번은 현재의 숙소 상황을 출력한다.
+		if (menu == 1) {
+			printf("현재 숙소 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i].roomnum, list[i].name, list[i].guestnum, list[i].charge);
+			}
+			printf("\n");
+		}
+		//메뉴 2번은 현재의 예약 상황을 출력한 뒤 예약 변경할 방번호를 입력받고, 그 방번호의 대표자의 이름을 변경한 뒤, 예약인원수를 변경한다.
+		else if (menu == 2) {
+			int a;  //예약변경할 방번호를 입력받은 값이 들어갈 변수
+			printf("현재 예약 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("예약방번호 %d, 예약대표자이름: %s, 예약숙박인수: %d \n", arr[i].resroomnum, arr[i].resname, arr[i].resguestnum);
+			}
+			printf("\n");
+
+			printf("예약 변경할 방번호를 입력하세요: \n");
+			scanf("%d", &a);
+
+			int checknum = 0;  //방번호입력이 잘못되지않았나 판단할 변수
+			for (i = 1; i < SIZE+1; i++)
+			{
+				if (i == a) 
+				{
+					checknum += 1;
+					printf("방번호: %d, 대표자이름: %s, 숙박인수: %d \n", arr[i-1].resroomnum, arr[i-1].resname, arr[i-1].resguestnum);
+					printf("변경할 대표자이름의 성을 입력하세요: (예 Kim) \n");
+					scanf("%s", arr[i-1].resname);
+
+					printf("변경할 숙박인수를 입력하세요: (예 1) \n");
+					scanf("%d", &arr[i-1].resguestnum);
+
+					printf("\n현재 예약 상황\n");
+					for (i = 0; i < SIZE; i++)
+					{
+						printf("예약방번호 %d, 예약대표자이름: %s, 예약숙박인수: %d \n", arr[i].resroomnum, arr[i].resname, arr[i].resguestnum);
+					}
+					printf("\n");
+				}
+			}
+			if (checknum == 0)
+			{
+				printf("잘못된 방번호 입니다.\n");
+			}
+			printf("\n");
+		}
+		// 메뉴3번은 현재 예약 상황을 출력한다.
+		else if (menu == 3) {
+			printf("현재 예약 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("예약방번호 %d, 예약대표자이름: %s, 예약숙박인수: %d \n", arr[i].resroomnum, arr[i].resname, arr[i].resguestnum);
+			}
+			printf("\n");
+		}
+		//메뉴 4번은 현재 예약 상황을 출력한 뒤, 예약대표자의 이름을 입력받고 비교한뒤 맞을 경우 현재 숙소데이터안에 예약정보와 요금을 넣고 예약목록은 초기화한다.
+		else if (menu == 4) {
+			char namecheck[10];
+			printf("현재 예약 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("예약방번호 %d, 예약대표자이름: %s, 예약숙박인수: %d \n", arr[i].resroomnum, arr[i].resname, arr[i].resguestnum);
+			}
+			printf("\n");
+
+			printf("입실을 확인합니다. 예약대표자이름 성을 입력하세요: (예 Kim)\n");
+			scanf("%s", namecheck); //namecheck안에 입력받은 예약대표자이름이 들어간다.
+			int checknum = 0;  //이 변수를 통해 이름이 제대로 입력되었는지 확인한다.
+			for (i = 0; i < SIZE; i++) 
+			{
+				char *rescheckname = arr[i].resname;  //rescheckname안에는 예약목록 안의 예약 대표자 이름이 들어간다.
+				int result = strcmp(rescheckname, namecheck);  //예약 목록안의 이름과 입력받은 이름이 같다면 result의 값은 0이 된다.
+				if (result == 0) 
+				{
+					printf("입실이 확인 되었습니다.\n");
+					checknum += 1;
+					strcpy(list[i].name,arr[i].resname); //현재의 숙소 상황의 이름 안에 예약 목록의 이름이 들어간다.
+					strcpy(arr[i].resname, "   ");  //예약 목록의 이름이 초기화 된다. 이 프로그램은 빈칸3칸을 이용한다.
+					list[i].guestnum = arr[i].resguestnum; //현재의 숙소 상황의 인원수안에 예약 목록의 인원수가 들어간다.
+					list[i].charge = arr[i].resguestnum * 10000; //현재의 숙소 상황의 요금에 예약 목록의 인원수*10000원의 값이 들어간다.
+					arr[i].resguestnum = 0;  //예약 목록의 인원수가 초기화 된다. 이 프로그램은 0을 이용한다.
+					
+					printf("현재 숙소 상황\n");
+					for (i = 0; i < SIZE; i++)
+					{
+						printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i].roomnum, list[i].name, list[i].guestnum, list[i].charge);
+					}
+					printf("\n");
+				}
+			}
+			if (checknum == 0)
+			{
+				printf("예약 되지 않았거나 잘못된 이름입니다.\n");
+			}
+			printf("\n");
+		}
+		//메뉴5번은 현재 숙소 상황을 출력한 뒤 변경할 방번호를 입력받고 숙박요금의 정보안에 들어갈 변경된 요금값을 복사한다.
+		else if (menu == 5) {
+			int c = 0; //변경할 방번호를 입력받은 값이 들어갈 변수.
+			int money = 0; //변경할 요금을 입력받은 값이 들어갈 변수.
+			printf("현재 숙소 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i].roomnum, list[i].name, list[i].guestnum, list[i].charge);
+			}
+			printf("\n");
+
+			printf("추가 비용을 관리합니다. 변경할 방번호를 입력하세요:  (예 1)\n");
+			scanf("%d", &c);
+			int checknum = 0; //이 변수를 통해 방번호가 제대로 입력되었는지 확인한다.
+			for (i = 1; i < SIZE + 1; i++)
+			{
+				if (i == c)
+				{
+					checknum += 1;
+					printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i-1].roomnum, list[i-1].name, list[i-1].guestnum, list[i-1].charge);
+					printf("변경할 숙박요금을 입력하세요: (예 15000) \n");
+					scanf("%d", &money);
+					list[i-1].charge = money;
+
+					printf("현재 숙소 상황\n");
+					for (i = 0; i < SIZE; i++)
+					{
+						printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i].roomnum, list[i].name, list[i].guestnum, list[i].charge);
+					}
+					printf("\n");
+				}
+			}
+			if (checknum == 0) 
+			{
+				printf("잘못된 방번호 입니다.\n");
+			}
+			printf("\n");
+		}
+		//메뉴6번은 퇴실할 방번호를 입력받은 뒤 요금만을 출력하고 현재의 숙소상황의 이름, 인원수, 요금을 초기화한다.
+		else if (menu == 6) {
+			int d = 0; //퇴실한 방호수를 입력받을 변수.
+			printf("퇴실을 확인합니다. 숙박한 호수를 입력하세요: (예 1)\n");
+			scanf("%d", &d);
+			printf("%d 호의 요금은 %d 입니다.\n", list[d-1].roomnum, list[d-1].charge);
+
+			strcpy(list[d-1].name, "   "); //현재의 숙소상황의 이름을 빈칸3개로 초기화한다.
+			list[d-1].guestnum = 0;  //현재의 숙소상황의 인원수를 0으로 초기화한다.
+			list[d-1].charge = 0;  //현재의 숙소상황의 요금을 0으로 초기화한다.
+
+			printf("\n현재 숙소 상황\n");
+			for (i = 0; i < SIZE; i++)
+			{
+				printf("방번호: %d, 대표자이름: %s, 숙박인수: %d, 숙박요금: %d \n", list[i].roomnum, list[i].name, list[i].guestnum, list[i].charge);
+			}
+			printf("\n");
+		}\
+		//문제7번은 현재 숙소 상황을 이용하여 현재 총 숙박중인 인원수와 받아야할 요금을 출력한다.
+		else if (menu == 7) {
+			int allguestnum= 0; //현재 총 숙박중인 인원수의 변수.
+			int allcharge = 0;  //나중에 받아야할 요금.
+			for (i = 0; i < SIZE; i++)
+			{
+				allguestnum += list[i].guestnum;
+				allcharge += list[i].charge;
+			}
+			printf("총 숙박중인 손님 수: %d, 총 숙박 요금: %d\n\n", allguestnum, allcharge);
+		}
+		//메뉴8번을 입력할 경우 프로그램을 종료합니다를 출력한뒤 break문을 이용하여 바로 종료시킨다.
+		else if (menu == 8) {
+			printf("프로그램을 종료합니다. \n");
+			break;
+		}
+		//menu 값이 위의 1~8의 값이 아닌경우 잘못 입력한 것이므로 선택이 잘못되었습니다.를 출력하고 break문을 사용하여 바로 종료시킨다.
+		else {
+			printf("메뉴 선택이 잘못되었습니다.\n");
+			printf("프로그램이 종료됩니다. \n");
+			break;
+		}
+	}
+	return 0;
+}
